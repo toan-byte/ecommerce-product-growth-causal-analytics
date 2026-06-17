@@ -1,0 +1,25 @@
+# .gitignore
+
+# Python virtual environment
+venv/
+__pycache__/
+*.pyc
+
+# dbt specific
+dbt_project/dbt_packages/
+dbt_project/logs/
+dbt_project/target/
+profiles.yml
+
+# Databases and heavy data files 
+*.duckdb
+*.duckdb.wal
+data/
+export/
+*.parquet
+*.csv
+*.zip
+
+# VS Code config
+.vscode/
+.DS_Store
