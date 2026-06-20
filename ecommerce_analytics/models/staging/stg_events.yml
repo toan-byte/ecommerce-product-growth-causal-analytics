@@ -1,18 +1,31 @@
+# dbt_project/models/staging/stg_events.yml
 version: 2
 
 models:
   - name: stg_events
-
+    description: "Bảng dữ liệu sự kiện clickstream đã được làm sạch và lọc bỏ bot traffic."
     columns:
+      - name: event_id
+        description: "Surrogate key được tạo bằng hàm hash MD5, bắt buộc duy nhất."
+        tests:
+          - unique
+          - not_null
 
-      - name: event_timestamp
+      - name: session_id
+        description: "Khóa ngoại liên kết tới phiên làm việc."
         tests:
           - not_null
 
       - name: event_type
+        description: "Loại sự kiện hành vi."
         tests:
-          - not_null
+          - accepted_values:
+              values: ['view', 'cart', 'purchase']
 
-      - name: user_id
+  - name: stg_products
+    description: "Bảng chiều thông tin sản phẩm và phân cấp ngành hàng."
+    columns:
+      - name: product_id
         tests:
+          - unique
           - not_null
