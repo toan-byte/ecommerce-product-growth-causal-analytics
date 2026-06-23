@@ -32,28 +32,24 @@ WITH user_purchase_metrics AS (
 ),
 
 rfm_scores AS (
-
+    
     SELECT
 
-        *,
+    *,
 
-        -- Recency: càng gần hiện tại càng tốt
-        ntile(5) OVER (
-            ORDER BY recency_days ASC
-        ) as r_score,
+    6 - ntile(5) OVER (
+        ORDER BY recency_days ASC
+    ) as r_score,
 
-        -- Frequency: mua càng nhiều càng tốt
-        ntile(5) OVER (
-            ORDER BY frequency DESC
-        ) as f_score,
+    ntile(5) OVER (
+        ORDER BY frequency ASC
+    ) as f_score,
 
-        -- Monetary: chi càng nhiều càng tốt
-        ntile(5) OVER (
-            ORDER BY monetary DESC
-        ) as m_score
+    ntile(5) OVER (
+        ORDER BY monetary ASC
+    ) as m_score
 
-    FROM user_purchase_metrics
-
+FROM user_purchase_metrics
 )
 
 SELECT

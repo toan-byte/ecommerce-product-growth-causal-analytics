@@ -32,5 +32,5 @@ FROM {{ ref('int_daily_category_metrics') }}
 
 WHERE category_group IN (
     'electronics',
-    'beauty'
+    'appliances'
 )
