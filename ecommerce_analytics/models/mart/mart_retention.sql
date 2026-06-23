@@ -1,28 +1,28 @@
+-- models/marts/mart_retention.sql
+
 {{ config(materialized='table') }}
 
-WITH base_cohort AS (
+WITH cohort_size AS (
 
     SELECT
-
-        cohort_date,
-
-        COUNT(DISTINCT user_id) as cohort_size
+        cohort_week,
+        COUNT(DISTINCT user_id) as cohort_users
 
     FROM {{ ref('int_retention') }}
 
-    WHERE days_since_first_active = 0
+    WHERE cohort_index = 0
 
     GROUP BY 1
 
 ),
 
-retention_by_day AS (
+retention_metrics AS (
 
     SELECT
 
-        cohort_date,
+        cohort_week,
 
-        days_since_first_active,
+        cohort_index,
 
         COUNT(DISTINCT user_id) as active_users
 
@@ -34,23 +34,25 @@ retention_by_day AS (
 
 SELECT
 
-    r.cohort_date,
+    r.cohort_week,
 
-    c.cohort_size,
+    r.cohort_index,
 
-    r.days_since_first_active,
+    c.cohort_users,
 
     r.active_users,
 
     ROUND(
-        r.active_users * 1.0
-        / c.cohort_size,
+        CAST(r.active_users AS DOUBLE)
+        / c.cohort_users,
         4
     ) as retention_rate
 
-FROM retention_by_day r
+FROM retention_metrics r
 
-INNER JOIN base_cohort c
-    ON r.cohort_date = c.cohort_date
+INNER JOIN cohort_size c
+ON r.cohort_week = c.cohort_week
 
-WHERE r.days_since_first_active BETWEEN 0 AND 30
+ORDER BY
+    r.cohort_week,
+    r.cohort_index
