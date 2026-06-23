@@ -2,66 +2,26 @@
 
 SELECT
 
-    CAST(event_timestamp AS DATE) as event_date,
+    event_date,
 
-    COUNT(DISTINCT session_id) as total_sessions,
-    COUNT(DISTINCT user_id) as total_users,
+    total_sessions,
 
-    SUM(CASE WHEN event_type = 'view' THEN 1 ELSE 0 END) as total_views,
-    SUM(CASE WHEN event_type = 'cart' THEN 1 ELSE 0 END) as total_carts,
-    SUM(CASE WHEN event_type = 'purchase' THEN 1 ELSE 0 END) as total_purchases,
+    total_users,
 
-    ROUND(
-        SUM(
-            CASE
-                WHEN event_type='purchase'
-                THEN COALESCE(price,0)
-                ELSE 0
-            END
-        ),
-        2
-    ) as total_revenue,
+    total_views,
 
-    COUNT(
-        DISTINCT CASE
-            WHEN event_type='purchase'
-            THEN session_id
-        END
-    ) as converted_sessions,
+    total_carts,
 
-    ROUND(
-        COUNT(
-            DISTINCT CASE
-                WHEN event_type='purchase'
-                THEN session_id
-            END
-        ) * 1.0
-        /
-        COUNT(DISTINCT session_id),
-        4
-    ) as session_conversion_rate,
+    total_purchases,
 
-    ROUND(
-        SUM(
-            CASE
-                WHEN event_type='purchase'
-                THEN COALESCE(price,0)
-                ELSE 0
-            END
-        )
-        /
-        NULLIF(
-            COUNT(
-                DISTINCT CASE
-                    WHEN event_type='purchase'
-                    THEN session_id
-                END
-            ),
-            0
-        ),
-        2
-    ) as average_order_value
+    total_revenue,
 
-FROM {{ ref('stg_events') }}
+    CAST(total_purchases AS DOUBLE)
+    / NULLIF(total_sessions,0)
+    as session_conversion_rate,
 
-GROUP BY 1
+    total_revenue
+    / NULLIF(total_purchases,0)
+    as average_order_value
+
+FROM {{ ref('int_daily_metrics') }}
