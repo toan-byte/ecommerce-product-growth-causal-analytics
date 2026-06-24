@@ -10,17 +10,17 @@ SELECT
 
     COUNT(
         DISTINCT CASE
-            WHEN e.event_type='cart'
+            WHEN e.event_type='purchase'
             THEN e.session_id
         END
-    ) as cart_sessions,
+    ) as purchase_sessions,
 
     COUNT(
         DISTINCT CASE
             WHEN e.event_type='purchase'
-            THEN e.session_id
+            THEN e.user_id
         END
-    ) as purchase_sessions
+    ) as purchase_users
 
 FROM {{ ref('stg_events') }} e
 

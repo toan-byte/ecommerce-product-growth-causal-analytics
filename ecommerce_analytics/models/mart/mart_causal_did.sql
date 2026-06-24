@@ -20,13 +20,11 @@ SELECT
 
     total_sessions,
 
-    cart_sessions,
-
     purchase_sessions,
 
     CAST(purchase_sessions AS DOUBLE)
-    / NULLIF(cart_sessions,0)
-    as cart_to_purchase_cr
+    / NULLIF(total_sessions,0)
+    as session_conversion_rate
 
 FROM {{ ref('int_daily_category_metrics') }}
 
