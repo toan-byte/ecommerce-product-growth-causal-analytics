@@ -10,14 +10,21 @@ SELECT
 
     COUNT(
         DISTINCT CASE
-            WHEN e.event_type='purchase'
+            WHEN e.event_type = 'cart'
+            THEN e.session_id
+        END
+    ) as cart_sessions,
+
+    COUNT(
+        DISTINCT CASE
+            WHEN e.event_type = 'purchase'
             THEN e.session_id
         END
     ) as purchase_sessions,
 
     COUNT(
         DISTINCT CASE
-            WHEN e.event_type='purchase'
+            WHEN e.event_type = 'purchase'
             THEN e.user_id
         END
     ) as purchase_users
@@ -25,6 +32,6 @@ SELECT
 FROM {{ ref('stg_events') }} e
 
 INNER JOIN {{ ref('stg_products') }} p
-ON e.product_id = p.product_id
+    ON e.product_id = p.product_id
 
 GROUP BY 1,2
