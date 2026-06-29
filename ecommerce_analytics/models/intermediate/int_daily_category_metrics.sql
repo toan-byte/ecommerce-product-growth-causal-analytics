@@ -5,6 +5,7 @@ SELECT
     CAST(e.event_timestamp AS DATE) as event_date,
 
     p.category_group,
+    e.user_id,
 
     COUNT(DISTINCT e.session_id) as total_sessions,
 
@@ -34,4 +35,4 @@ FROM {{ ref('stg_events') }} e
 INNER JOIN {{ ref('stg_products') }} p
     ON e.product_id = p.product_id
 
-GROUP BY 1,2
+GROUP BY 1,2,3

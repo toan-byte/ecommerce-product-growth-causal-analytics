@@ -46,7 +46,8 @@ marts_to_export = [
     'mart_customer_segments',
     'mart_causal_did',
     'mart_brand_performance',
-    'int_daily_category_metrics' # Đã bổ sung bảng chẩn đoán ngành hàng toàn diện!
+    'int_daily_category_metrics',
+    'mart_user_categories'
 ]
 
 print("\n--- [BƯỚC 2]: BẮT ĐẦU XUẤT FILE PARQUET ---")
